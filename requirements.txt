@@ -10,5 +10,4 @@ jieba
 wordcloud
 underthesea
 squarify
-pickle
 re
