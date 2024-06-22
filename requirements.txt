@@ -7,7 +7,6 @@ scikit-learn
 wordcloud
 plotly
 jieba
-pickle
 wordcloud
 underthesea
 re
