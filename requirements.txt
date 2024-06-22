@@ -10,3 +10,4 @@ jieba
 wordcloud
 underthesea
 squarify
+pickle
