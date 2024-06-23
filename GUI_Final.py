@@ -80,6 +80,7 @@ with tab2:
     pkl_filename = "cus_segment_model.pkl"  
     with open(pkl_filename, 'rb') as file:  
         cus_segment_model = pickle.load(file)
+    cus_segment_model.n_init = 10
     cus_segment_model.fit(df_RFM)
     df_RFM["Cluster"] = cus_segment_model.labels_
     conditions = [
