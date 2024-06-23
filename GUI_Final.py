@@ -17,7 +17,7 @@ from wordcloud import WordCloud
 import pickle
 
 
-STOP_WORD_FILE = 'Data/stopwords-en.txt'
+STOP_WORD_FILE = 'stopwords-en.txt'
 with open(STOP_WORD_FILE, 'r', encoding='utf-8') as file:
     stop_words = file.read()
 stop_words = stop_words.split('\n')
@@ -27,7 +27,7 @@ st.title("Customer Segmentation")
 menu = ["Trang chủ", "Tổng quan", "Cơ chế phân nhóm", "Phân tích khách hàng", "Đề xuất chiến lược"]
 tab1, tab2, tab3, tab4, tab5 = st.tabs(menu)
 with tab1:
-    st.image('Data/Featured-image-2.webp')
+    st.image('Featured-image-2.webp')
     st.write("""Bạn là chủ Cửa hàng bán lẻ. Bạn muốn phân tích tệp khách hàng?
              Ứng dụng này sẽ giúp cửa hàng bạn có thể bán được nhiều hàng hóa hơn cũng như giới thiệu sản phẩm đến đúng đối tượng khách hàng, chăm sóc và làm hài lòng khách hàng.""")    
     if st.button("Let's try :point_right:"):
@@ -35,7 +35,7 @@ with tab1:
     st.write('#### Author 1: Triệu Thị Kim Trang')
     st.write('#### Author 2: Phan Thị Tuyết')
 with tab2:
-    st.image('Data/Business Overview.jpg')
+    st.image('Business Overview.jpg')
     st.write('#### Vui lòng upload các file giao dịch và sản phẩm của cửa hàng')
     uploaded_trans = st.file_uploader("Upload Transactions file", type=['txt', 'csv'])
     uploaded_product= st.file_uploader("Upload Products file", type=['txt', 'csv'])
@@ -44,8 +44,8 @@ with tab2:
         df_product = pd.read_csv(uploaded_product)
         df = pd.read_csv(uploaded_trans)
     else:
-        df_product = pd.read_csv('Data/Products_with_Prices.csv')
-        df = pd.read_csv('Data/Transactions.csv')
+        df_product = pd.read_csv('Products_with_Prices.csv')
+        df = pd.read_csv('Transactions.csv')
         
     df = df.merge(df_product, how='left', on='productId')
     df['Sales'] = df['items'] * df['price']
@@ -253,7 +253,7 @@ with tab2:
         processed_text = text_underthesea(sample_text)
         wcloud_visualize(processed_text)
 with tab3:
-    st.image('Data/customer-segmentation-social.png')
+    st.image('customer-segmentation-social.png')
     st.write('### Model RFM sử dụng thuật toán KMeans')
     st.write("""Customer Segmentation là một công cụ mạnh mẽ giúp doanh nghiệp hiểu sâu hơn về khách hàng của họ và cách tùy chỉnh chiến lược tiếp thị.
                             Đây là một bước không thể thiếu để đảm bảo rằng bạn đang tiếp cận và phục vụ mọi nhóm khách hàng một cách hiệu quả""")
@@ -293,7 +293,7 @@ with tab3:
     st.plotly_chart(fig)
 
 with tab4:
-    st.image('Data/segmentation.webp')
+    st.image('segmentation.webp')
     st.subheader("PHÂN TÍCH KHÁCH HÀNG")
     type = st.radio("### Nhập thông tin khách hàng", options=["Xem KH hiện hữu", "Dự đoán KH mới"])
     if type == "Xem KH hiện hữu":
@@ -402,7 +402,7 @@ with tab4:
         st.dataframe(df_customer)
 
 with tab5:
-    st.image('Data/marketing-strategy.jpg')
+    st.image('marketing-strategy.jpg')
     st.write('#### KH MỚI (NEW):')
     st.write('KH mới giao dịch gần đây số tiền và tần suất không cao -> có thể tiềm năng nếu đẩy thêm nhiều chính sách dành cho KH mới.')
     st.write('#### KH VIP (VIP):')
