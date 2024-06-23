@@ -403,7 +403,7 @@ with tab4:
         st.dataframe(df_customer)
 
 with tab5:
-    st.image('marketing-strategy.jpg')
+    st.image('a_strategy.png')
     st.write('#### KH MỚI (NEW):')
     st.write('KH mới giao dịch gần đây số tiền và tần suất không cao -> có thể tiềm năng nếu đẩy thêm nhiều chính sách dành cho KH mới.')
     st.write('#### KH VIP (VIP):')
