@@ -373,7 +373,7 @@ with tab4:
         # Loop to get input from the user for each customer
             # Get input using sliders
         # Tạo DataFrame rỗng
-        df_customer = pd.DataFrame(columns=["Member_number_Predict", "Recency", "Frequency", "Monetary"])
+        df_customer_header = pd.DataFrame(columns=["Member_number_Predict", "Recency", "Frequency", "Monetary"])
 
         # Lặp qua 3 khách hàng
         for i in range(3):
@@ -385,8 +385,8 @@ with tab4:
             monetary = st.slider("Monetary", 1, 1000, 100, key=f"monetary_{i}")
             
             # Thêm dữ liệu nhập vào DataFrame
-            df_customer = df_customer.concat({"Member_number_Predict": Member_number_Predict, "Recency": recency, "Frequency": frequency, "Monetary": monetary}, ignore_index=True)
-            
+            df_customer_new_row = pd.DataFrame({"Member_number_Predict": Member_number_Predict, "Recency": recency, "Frequency": frequency, "Monetary": monetary}, ignore_index=True)
+            df_customer = pd.concat([df_customer_header, df_customer_new_row])
         # Hiển thị DataFrame
         st.dataframe(df_customer)
         df_new_predict = cus_segment_model.predict(df_customer[['Recency','Frequency','Monetary']])
