@@ -385,7 +385,7 @@ with tab4:
             monetary = st.slider("Monetary", 1, 1000, 100, key=f"monetary_{i}")
             
             # Thêm dữ liệu nhập vào DataFrame
-            df_customer = df_customer.append({"Member_number_Predict": Member_number_Predict, "Recency": recency, "Frequency": frequency, "Monetary": monetary}, ignore_index=True)
+            df_customer = df_customer.concat({"Member_number_Predict": Member_number_Predict, "Recency": recency, "Frequency": frequency, "Monetary": monetary}, ignore_index=True)
             
         # Hiển thị DataFrame
         st.dataframe(df_customer)
