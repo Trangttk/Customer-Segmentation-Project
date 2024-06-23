@@ -24,8 +24,8 @@ stop_words = stop_words.split('\n')
 
 # USING MENU
 st.title("Customer Segmentation")
-menu = ["Trang chủ", "Tổng quan", "Cơ chế phân nhóm", "Phân tích khách hàng"]
-tab1, tab2, tab3, tab4 = st.tabs(menu)
+menu = ["Trang chủ", "Tổng quan", "Cơ chế phân nhóm", "Phân tích khách hàng", "Đề xuất chiến lược"]
+tab1, tab2, tab3, tab4, tab5 = st.tabs(menu)
 with tab1:
     st.image('Data/Featured-image-2.webp')
     st.write("""Bạn là chủ Cửa hàng bán lẻ. Bạn muốn phân tích tệp khách hàng?
@@ -40,8 +40,13 @@ with tab2:
     uploaded_trans = st.file_uploader("Upload Transactions file", type=['txt', 'csv'])
     uploaded_product= st.file_uploader("Upload Products file", type=['txt', 'csv'])
 # LOADING DATA
-    df_product = pd.read_csv(uploaded_product)
-    df = pd.read_csv(uploaded_trans)
+    if uploaded_trans is not None and uploaded_product is not None:
+        df_product = pd.read_csv(uploaded_product)
+        df = pd.read_csv(uploaded_trans)
+    else:
+        df_product = pd.read_csv('Data/Products_with_Prices.csv')
+        df = pd.read_csv('Data/Transactions.csv')
+        
     df = df.merge(df_product, how='left', on='productId')
     df['Sales'] = df['items'] * df['price']
     df['Transaction_id'] = df.index
@@ -249,16 +254,16 @@ with tab2:
         wcloud_visualize(processed_text)
 with tab3:
     st.image('Data/customer-segmentation-social.png')
-    st.write('### Manual Segmentation')
+    st.write('### Model RFM sử dụng thuật toán KMeans')
     st.write("""Customer Segmentation là một công cụ mạnh mẽ giúp doanh nghiệp hiểu sâu hơn về khách hàng của họ và cách tùy chỉnh chiến lược tiếp thị.
                             Đây là một bước không thể thiếu để đảm bảo rằng bạn đang tiếp cận và phục vụ mọi nhóm khách hàng một cách hiệu quả""")
-    st.write("""**Các phân cụm khách hàng:**""")
+    st.write("""**Các phân cụm khách hàng theo thuật toán KMeans:**""")
     st.write("""
-            + VIP: Khách hàng có lượng chi tiêu lớn, tần suất tiêu thụ thường xuyên, và vừa mua hàng gần đây
-            + NEW: Khách hàng mới đến gần đây, chưa quan tâm đến mức độ chi tiêu
-            + LOYAL: Khách hàng thường đến và vẫn còn đến gần đây
-            + LOST: Khách hàng quá lâu chưa đến
-            + REGULARS: Nhóm còn lại, thường ở mức trung bình ở 3 khía cạnh 'Recency', 'Frequency', 'Monetary'
+            + KH VIP (VIP): Khách hàng có lượng chi tiêu lớn, tần suất tiêu thụ thường xuyên, và vừa mua hàng gần đây
+            + KH MỚI (NEW): Khách hàng mới đến gần đây, chưa quan tâm đến mức độ chi tiêu
+            + KH THÂN THIẾT (LOYAL): Khách hàng thường đến và vẫn còn đến gần đây
+            + KH RỜI BỎ (LOST): Khách hàng quá lâu chưa đến
+            + KH THÔNG THƯỜNG (REGULARS): Nhóm còn lại, thường ở mức trung bình ở 3 khía cạnh 'Recency', 'Frequency', 'Monetary'
             """)
     st.write('### Giá trị trung bình Recency-Frequency-Monetary theo các phân cụm')
     st.dataframe(rfm_agg)
@@ -268,8 +273,11 @@ with tab3:
     fig = plt.gcf()
     ax = fig.add_subplot()
     fig.set_size_inches(14, 10)
+    colors_dict2 = {'Cluster0':'yellow','Cluster1':'royalblue', 'Cluster2':'cyan',
+               'Cluster3':'red', 'Cluster4':'purple', 'Cluster5':'green', 'Cluster6':'gold'}
     squarify.plot(sizes=rfm_agg['Count'],
 				  text_kwargs={'fontsize':12,'weight':'bold', 'fontname':"sans serif"},
+                  color=colors_dict2.values(),
 				  label=['{} \n{:.0f} days \n{:.0f} orders \n{:.0f} $ \n{:.0f} customers ({}%)'.format(*rfm_agg.iloc[i])
 						  for i in range(0, len(rfm_agg))], alpha=0.5 )
     plt.title("Customers Segments - Treemap",fontsize=26,fontweight="bold")
@@ -393,4 +401,16 @@ with tab4:
         df_customer['CustGroup_Predict'] = np.select(conditions3, choices3, default='UNKNOWN')
         st.dataframe(df_customer)
 
-
+with tab5:
+    st.image('Data/marketing-strategy.jpg')
+    st.write('#### KH MỚI (NEW):')
+    st.write('KH mới giao dịch gần đây số tiền và tần suất không cao -> có thể tiềm năng nếu đẩy thêm nhiều chính sách dành cho KH mới.')
+    st.write('#### KH VIP (VIP):')
+    st.write('KH giao dịch nhiều+gần với ngày báo cáo, với tần suất lớn và chi số tiền lớn -> nhóm rất tiềm năng, cần đưa ra các chính sách ưu đãi để khuyến khích KH mua nhiều hơn')
+    st.write('#### KH THÂN THIẾT (LOYAL):')
+    st.write('KH giao dịch không lâu trước đây, nhưng tần suất và số tiền ở mức trung bình -> đã bắt đầu có thói quen mua hàng tại đơn vị này, tiềm năng có thể nâng hạng lên KH VIP, nên theo dõi và chăm sóc khách hàng nhiều hơn.')
+    st.write('#### KH THÔNG THƯỜNG (REGULARS):')
+    st.write('KH giao dịch khá lâu trước đây, nhưng tần suất và số tiền ở mức trung bình  -> có thể là nhóm KH khi có nhu cầu thì tiện thể ghé mua, không tiềm năng.')
+    st.write('#### KH RỜI BỎ (LOST):')
+    st.write('KH đã rất lâu không giao dịch và tần suất + số tiền thấp -> không tiềm năng')
+    
